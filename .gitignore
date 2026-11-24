@@ -158,6 +158,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+testenv/
 
 # Conda environments
 conda-meta/
