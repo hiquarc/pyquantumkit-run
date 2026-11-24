@@ -9,6 +9,9 @@ from pqk_run.platforms.originq import OriginQBackend
 from pqk_run.platforms.qiskit import QiskitBackend
 from pqk_run.platforms.quafu import QuafuBackend
 from pqk_run.platforms.tianyan import TianYanBackend
+from pqk_run.platforms.iqm import IQMBackend
+from pqk_run.platforms.openquantum import OpenQuantumBackend
+from pqk_run.platforms.wuyue import WuYueBackend
 
 def _argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -35,8 +38,10 @@ _BACKEND_CLASSES = {
     'originq': OriginQBackend,
     'quafu': QuafuBackend,
     'tianyan': TianYanBackend,
+    'iqm': IQMBackend,
+    'openquantum': OpenQuantumBackend,
+    'wuyue': WuYueBackend,
 }
-
 
 # Peixun: 我对run函数进行了修改
 #   第一个参数名改为runnable，表示量子线路或量子程序
@@ -65,7 +70,7 @@ def run(runnable: CircuitIO|QProgramBuilder,
         return backend_impl.run(runnable, shots, subsdict)
 
     # QProgramBuilder对象：提取出其中的量子线路运行，再解读运行的结果返回
-    if isinstance(runnable, QProgramBuilder):
+    elif isinstance(runnable, QProgramBuilder):
         result = run(runnable.get_built_circuit(),
             provider, backend, shots, api_key, api_key_file, subsdict, options
         )
@@ -74,5 +79,3 @@ def run(runnable: CircuitIO|QProgramBuilder,
     
     else:
         raise TypeError('run() expects a CircuitIO or QProgramBuilder object.')
-
-    
