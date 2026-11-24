@@ -15,4 +15,3 @@ def _convert_circuit(circuit: CircuitIO, framework: str, subsdict: dict = None):
         converted = new_circuit(framework, circuit.get_nqbits())
     circuit.append_into_actual_circuit(converted, subsdict)
     return converted
-
