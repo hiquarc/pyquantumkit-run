@@ -95,11 +95,29 @@ class WuYueBackend(_ProviderBackend):
         return RunError(f'{self.provider} could not {action}: {text}')
 
     @staticmethod
+    def _outcome_keys(values: dict) -> dict:
+        # Matrix2 labels an outcome by its integer value and zero-pads it,
+        # so '01' is the bit string 001. A pure 0/1 key stays a bit string.
+        textual = []
+        for raw in values:
+            if isinstance(raw, int):
+                return values
+            key = str(raw).strip()
+            if not key.isdigit():
+                return values
+            textual.append(key)
+        if not any(set(key) - set('01') for key in textual):
+            return values
+        return {int(key): count for key, count in zip(textual, values.values())}
+
+    @staticmethod
     def _measured_counts(values: dict, ncbits: int, shots: int = None,
                          probabilities: bool = False) -> dict[str, int]:
         # Qz-01 and Mq-02 return one bit per chip qubit. The measured bits
         # are the end of that string.
-        counts = _normalize_counts(values, ncbits, probabilities, shots)
+        counts = _normalize_counts(
+            WuYueBackend._outcome_keys(values), ncbits, probabilities, shots,
+        )
         if ncbits <= 0:
             return counts
         measured = {}
