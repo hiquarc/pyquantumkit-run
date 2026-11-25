@@ -51,7 +51,7 @@ Repository = "https://github.com/hiquarc/pyquantumkit-run"
 Documentation = "https://pyquantumkit.readthedocs.io/"
 
 [tool.setuptools.packages.find]
-include = ["pqk-run*"]
+include = ["pqk_run*"]
 
 [tool.setuptools.package-data]
 "pyquantumkit" = ["init_frame.txt"]

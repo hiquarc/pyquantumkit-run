@@ -1,3 +1,5 @@
+import os
+
 from pqk_run import RunError
 from pqk_run.result import RunResult, _normalize_counts
 from pqk_run.circuit import _convert_circuit
