@@ -94,20 +94,56 @@ class WuYueBackend(_ProviderBackend):
             return self._api_key_error(action, exc)
         return RunError(f'{self.provider} could not {action}: {text}')
 
+    @staticmethod
+    def _measured_counts(values: dict, ncbits: int, shots: int = None,
+                         probabilities: bool = False) -> dict[str, int]:
+        # Qz-01 and Mq-02 return one bit per chip qubit. The measured bits
+        # are the end of that string.
+        counts = _normalize_counts(values, ncbits, probabilities, shots)
+        if ncbits <= 0:
+            return counts
+        measured = {}
+        for bit, count in counts.items():
+            if len(bit) > ncbits:
+                bit = bit[-ncbits:]
+            if count:
+                measured[bit] = measured.get(bit, 0) + count
+        return measured
+
+    @staticmethod
+    def _line_result(raw):
+        # Mq-02 leaves out_counts empty and stores the histogram here.
+        if not isinstance(raw, str) or not raw.strip():
+            return None
+        try:
+            parsed = json.loads(raw)
+        except json.JSONDecodeError:
+            return None
+        table = parsed.get('lineResult') if isinstance(parsed, dict) else None
+        return table if isinstance(table, dict) and table else None
+
     def _measurement(self, result, circuit: CircuitIO, shots: int) -> dict[str, int]:
         if not result.get_success():
             status = result.get_status()
             raw = result.get_raw_result()
             detail = status if not raw else f'{status}: {str(raw)[:500]}'
             raise RunError(f"WuYue backend '{self.backend}' failed: {detail}")
+        ncbits = circuit.get_ncbits()
         counts = result.get_counts() or {}
         if counts:
-            return _normalize_counts(counts, circuit.get_ncbits())
+            return self._measured_counts(counts, ncbits)
         probabilities = result.get_prob() or {}
         if probabilities:
-            probabilities = {key: float(value) for key, value in probabilities.items()}
-            return _normalize_counts(probabilities, circuit.get_ncbits(), True, shots)
-        raise RunError(f"WuYue backend '{self.backend}' returned no measurement results.")
+            return self._measured_counts(
+                {key: float(value) for key, value in probabilities.items()},
+                ncbits, shots, True,
+            )
+        raw = self._line_result(result.get_raw_result())
+        if raw:
+            return self._measured_counts(raw, ncbits)
+        detail = str(result.get_raw_result() or '')[:500]
+        suffix = f': {detail}' if detail else ''
+        raise RunError(f"WuYue backend '{self.backend}' returned no measurement results{suffix}")
 
     def _run_local(self, circuit: CircuitIO, shots: int, subsdict: dict = None) -> RunResult:
         self._configure()
