@@ -29,7 +29,7 @@ class OpenQuantumBackend(_ProviderBackend):
             from openquantum_sdk.auth import ClientCredentials, ClientCredentialsAuth
         except ImportError as exc:
             raise RunError(
-                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit[openquantum]'."
+                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit-run[openquantum]'."
             ) from exc
         text = self.api_key.strip()
         try:
@@ -53,7 +53,7 @@ class OpenQuantumBackend(_ProviderBackend):
             from openquantum_sdk.clients import ManagementClient, SchedulerClient
         except ImportError as exc:
             raise RunError(
-                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit[openquantum]'."
+                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit-run[openquantum]'."
             ) from exc
         auth, token = self._credentials()
         if auth is not None:
@@ -127,7 +127,7 @@ class OpenQuantumBackend(_ProviderBackend):
             from openquantum_sdk.clients import JobSubmissionConfig
         except ImportError as exc:
             raise RunError(
-                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit[openquantum]'."
+                "Provider 'openquantum' requires openquantum-sdk. Install 'pyquantumkit-run[openquantum]'."
             ) from exc
         scheduler, management = self._clients()
         try:

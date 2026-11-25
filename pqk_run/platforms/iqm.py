@@ -49,7 +49,7 @@ class IQMBackend(_ProviderBackend):
             )
         except ImportError as exc:
             raise RunError(
-                "Provider 'iqm' requires iqm-client with the qiskit extra. Install 'pyquantumkit[iqm]'."
+                "Provider 'iqm' requires iqm-client with the qiskit extra. Install 'pyquantumkit-run[iqm]'."
             ) from exc
         try:
             client = IQMServerClient(
@@ -76,7 +76,7 @@ class IQMBackend(_ProviderBackend):
         try:
             from qiskit_aer import AerSimulator
         except ImportError as exc:
-            raise RunError("Provider 'iqm' local execution requires qiskit-aer. Install 'pyquantumkit[qiskit]'.") from exc
+            raise RunError("Provider 'iqm' local execution requires qiskit-aer. Install 'pyquantumkit-run[qiskit]'.") from exc
         return self._simulator_result(AerSimulator(), circuit, shots, subsdict)
 
     def _run_cloud(self, circuit: CircuitIO, shots: int, subsdict: dict = None) -> RunResult:
@@ -90,7 +90,7 @@ class IQMBackend(_ProviderBackend):
             from qiskit import transpile
         except ImportError as exc:
             raise RunError(
-                "Provider 'iqm' requires iqm-client with the qiskit extra. Install 'pyquantumkit[iqm]'."
+                "Provider 'iqm' requires iqm-client with the qiskit extra. Install 'pyquantumkit-run[iqm]'."
             ) from exc
         provider = IQMProvider(self._server_url(), quantum_computer=self.backend, token=self.api_key)
         cloud_backend = None

@@ -51,7 +51,7 @@ class WuYueBackend(_ProviderBackend):
             from wuyue.utils import ml_backend
         except ImportError as exc:
             raise RunError(
-                "Provider 'wuyue' requires the wuyue package. Install 'pyquantumkit[wuyue]'."
+                "Provider 'wuyue' requires the wuyue package. Install 'pyquantumkit-run[wuyue]'."
             ) from exc
         if ml_backend.get_xp() is None:
             ml_backend.set_ml_backend('numpy')
@@ -154,7 +154,7 @@ class WuYueBackend(_ProviderBackend):
         except ImportError as exc:
             raise RunError(
                 "Provider 'wuyue' local execution requires wuyue and qiskit. "
-                "Install 'pyquantumkit[wuyue]'."
+                "Install 'pyquantumkit-run[wuyue]'."
             ) from exc
         converted = _convert_circuit(circuit, self.framework, subsdict)
         try:
@@ -173,7 +173,7 @@ class WuYueBackend(_ProviderBackend):
             from wuyue.plugin.runner import Runner
         except ImportError as exc:
             raise RunError(
-                "Provider 'wuyue' requires the wuyue package. Install 'pyquantumkit[wuyue]'."
+                "Provider 'wuyue' requires the wuyue package. Install 'pyquantumkit-run[wuyue]'."
             ) from exc
         converted = _convert_circuit(circuit, self.framework, subsdict)
         timeout = self._timeout()
